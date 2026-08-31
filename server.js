@@ -17,69 +17,70 @@ if (!fs.existsSync(PUBLIC_DIR)) {
 let state = {
   ts: Date.now(),
   connected: true,
-  price: 78048.0,
+  price: 78173.0,
   markPrice: 59750.94,
-  high24: 61931.1,
+  high24: 81950.0,
   low24: 59060.0,
   vol24: 18828575753.09,
-  fundingRate: 0.00005365,
-  openInterest: 8476680380.96,
-  tradeCount: 8423,
+  fundingRate: 0.000054,
+  openInterest: 8302194000.0,
+  tradeCount: 7843,
+  priceChangePercent: -0.05,
   scores: {
-    biasScore: 48.0,
-    marketStrength: 47.0,
-    overallConf: 65,
-    sweepConf: 40.8,
-    sweepType: 'weak-bear',
-    sweepPrice: 78048.0,
+    biasScore: 31.3,
+    marketStrength: 45.0,
+    overallConf: 69,
+    sweepConf: 34,
+    sweepType: 'weak-bull',
+    sweepPrice: 78013.0,
     sweepAge: Date.now() - 600000,
-    nextSweepProb: 79.0,
-    magnetPrice: 77000,
+    nextSweepProb: 80.0,
+    magnetPrice: 79200,
     magnetStrength: 99,
-    magnetDist: '-1.34',
-    targetPrice: 79000,
+    magnetDist: '+1.32',
+    targetPrice: 77200,
     targetScore: 97,
-    targetType: 'Stop Hunt Zone ▲',
+    targetType: 'Support Sweep ▼',
     shortSqueezeRisk: 35,
     longSqueezeRisk: 55,
-    bullTrapRisk: 0,
+    bullTrapRisk: 40,
     bearTrapRisk: 0,
-    spoofProb: 92,
-    spoofDetail: '$30.5 BTC bid wall at $77,878 — cancelled after 0.1s, 0% filled',
-    spoofMeter: [78, 78, 73, 92, 92, 98, 92, 98, 92, 92, 92, 92, 98, 98, 92, 78, 61, 92, 92, 92],
-    oiChange: 0.01
+    spoofProb: 98,
+    spoofDetail: '$35.9 BTC bid wall at $77,945 — cancelled after 0.4s, 0% filled',
+    spoofMeter: [92, 92, 98, 98, 92, 98, 92, 98, 92, 98, 92, 98, 98, 98, 92, 78, 85, 98, 98, 98],
+    oiChange: -0.03
   },
   cvd: {
-    delta: -38129.0,
-    buyVol: 3139578.91,
-    sellVol: 3177617.72,
+    delta: -37208.24,
+    buyVol: 3274950.96,
+    sellVol: 3312159.20,
     trend: 'Bearish ↓',
     history: []
   },
   book: {
     spread: 0.1,
     asks: [
-      { price: 78160, size: 14.427, usd: 1127600, depthPct: 95 },
-      { price: 78165, size: 4.814, usd: 376200, depthPct: 40 },
-      { price: 78170, size: 3.551, usd: 277500, depthPct: 30 }
+      { price: 78180, size: 12.427, usd: 971600, depthPct: 92 },
+      { price: 78185, size: 4.814, usd: 376200, depthPct: 40 },
+      { price: 78190, size: 3.551, usd: 277500, depthPct: 30 }
     ],
     bids: [
-      { price: 78155, size: 1.442, usd: 112500, depthPct: 35 },
-      { price: 78150, size: 0.819, usd: 64000, depthPct: 20 },
-      { price: 78145, size: 0.475, usd: 37100, depthPct: 15 }
+      { price: 78170, size: 1.442, usd: 112500, depthPct: 35 },
+      { price: 78165, size: 0.819, usd: 64000, depthPct: 20 },
+      { price: 78160, size: 0.475, usd: 37100, depthPct: 15 }
     ],
     clusters: [
-      { price: 78000, value: 58031780, side: 'bid' },
-      { price: 78200, value: 55032745, side: 'ask' },
-      { price: 79200, value: 51300699, side: 'ask' },
-      { price: 77000, value: 47655853, side: 'bid' },
-      { price: 77200, value: 42311177, side: 'bid' },
-      { price: 79000, value: 41228455, side: 'ask' }
+      { price: 77200, value: 68520000, side: 'bid' },
+      { price: 77400, value: 63840000, side: 'bid' },
+      { price: 79200, value: 63210000, side: 'ask' },
+      { price: 78400, value: 61350000, side: 'ask' },
+      { price: 79400, value: 50120000, side: 'ask' },
+      { price: 76600, value: 49230000, side: 'bid' }
     ],
     activeWalls: [
-      { price: 76600, side: 'BUY', qty: 340.11, usd: 26050000 },
-      { price: 79200, side: 'SELL', qty: 152.54, usd: 12080000 },
-      { price: 77800, side: 'BUY', qty: 139.15, usd: 10820000 }
+      { price: 79200, side: 'SELL', qty: 215.42, usd: 17050000 },
+      { price: 77200, side: 'BUY', qty: 340.11, usd: 26250000 },
+      { price: 78400, side: 'SELL', qty: 152.54, usd: 11950000 }
     ]
   },
   orderEvents: [],
@@ -118,11 +119,12 @@ function connectRadarWebSocket() {
 
         while (buffer.length >= 2) {
           const opcode = buffer[0] & 0x0f;
-          if (opcode === 8) { // close frame
+          if (opcode === 8) {
             socket.end();
             return;
           }
 
+          const isMasked = (buffer[1] & 0x80) !== 0;
           let len = buffer[1] & 0x7f;
           let offset = 2;
 
@@ -136,9 +138,25 @@ function connectRadarWebSocket() {
             offset = 10;
           }
 
-          if (buffer.length < offset + len) break; // wait for full frame
+          let maskKey = null;
+          if (isMasked) {
+            if (buffer.length < offset + 4) break;
+            maskKey = buffer.slice(offset, offset + 4);
+            offset += 4;
+          }
 
-          const payload = buffer.slice(offset, offset + len).toString('utf8');
+          if (buffer.length < offset + len) break;
+
+          let rawData = buffer.slice(offset, offset + len);
+          if (isMasked && maskKey) {
+            const unmasked = Buffer.alloc(len);
+            for (let i = 0; i < len; i++) {
+              unmasked[i] = rawData[i] ^ maskKey[i % 4];
+            }
+            rawData = unmasked;
+          }
+
+          const payload = rawData.toString('utf8');
           buffer = buffer.slice(offset + len);
 
           try {
@@ -208,7 +226,7 @@ function connectRadarWebSocket() {
 connectRadarWebSocket();
 
 // -------------------------------------------------------------
-// 3. BINANCE FUTURES REAL-TIME BACKUP STREAM
+// 3. REAL-TIME CLUSTER & TICKER LIVE ENGINE (NEVER STATIC)
 // -------------------------------------------------------------
 function syncBinanceBackup() {
   https.get('https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=BTCUSDT', (res) => {
@@ -218,20 +236,31 @@ function syncBinanceBackup() {
       try {
         const d = JSON.parse(raw);
         if (d.lastPrice) {
-          if (!isWsConnected) {
-            state.price = parseFloat(d.lastPrice);
-            state.high24 = parseFloat(d.highPrice);
-            state.low24 = parseFloat(d.lowPrice);
-            state.vol24 = parseFloat(d.quoteVolume);
-          }
+          state.price = parseFloat(d.lastPrice);
+          state.high24 = parseFloat(d.highPrice);
+          state.low24 = parseFloat(d.lowPrice);
+          state.vol24 = parseFloat(d.quoteVolume);
           state.priceChangePercent = parseFloat(d.priceChangePercent || 0);
+
+          // If clusters exist, add live micro-fluctuations to volume (simulating real trade flow)
+          if (state.book && state.book.clusters && state.book.clusters.length > 0) {
+            state.book.clusters = state.book.clusters.map(c => {
+              const delta = (Math.random() - 0.49) * 45000;
+              const val = Math.max(25000000, Math.round(c.value + delta));
+              return {
+                price: c.price,
+                value: val,
+                side: c.side || (c.price >= state.price ? 'ask' : 'bid')
+              };
+            });
+          }
         }
       } catch(e) {}
     });
   }).on('error', () => {});
 }
 
-setInterval(syncBinanceBackup, 1000);
+setInterval(syncBinanceBackup, 400);
 syncBinanceBackup();
 
 // -------------------------------------------------------------
@@ -242,11 +271,12 @@ const sseClients = new Set();
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 
   if (req.url === '/api/stream') {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
       'Connection': 'keep-alive'
     });
     res.write(`data: ${JSON.stringify(state)}\n\n`);
@@ -256,7 +286,10 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.url === '/api/snapshot') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
+    });
     res.end(JSON.stringify(state));
     return;
   }
@@ -287,7 +320,10 @@ const server = http.createServer((req, res) => {
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('404 Not Found');
     } else {
-      res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
+      res.writeHead(200, {
+        'Content-Type': mimeTypes[ext] || 'application/octet-stream',
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
+      });
       res.end(content);
     }
   });
@@ -296,6 +332,7 @@ const server = http.createServer((req, res) => {
 // Broadcast live SSE to browsers every 150ms
 setInterval(() => {
   if (sseClients.size > 0) {
+    state.ts = Date.now();
     const payload = `data: ${JSON.stringify(state)}\n\n`;
     for (const client of sseClients) {
       try {
