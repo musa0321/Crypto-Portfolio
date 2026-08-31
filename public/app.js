@@ -336,6 +336,16 @@ function updateUI() {
   }
   previousPrice = p;
 
+  // 24h Change %
+  const chg = localState.priceChangePercent !== undefined 
+    ? localState.priceChangePercent 
+    : ((p - (localState.low24 || p)) / (localState.low24 || p)) * 100;
+  const heroChgEl = document.getElementById('hero-change');
+  if (heroChgEl) {
+    heroChgEl.textContent = (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
+    heroChgEl.className = 'hero-change ' + (chg >= 0 ? 'chip-bull' : 'chip-bear');
+  }
+
   // 24h Stats
   if (localState.high24) document.getElementById('stat-high').textContent = '$' + Math.round(localState.high24).toLocaleString();
   if (localState.low24) document.getElementById('stat-low').textContent = '$' + Math.round(localState.low24).toLocaleString();
@@ -386,6 +396,18 @@ function updateUI() {
   distElem.textContent = (dist >= 0 ? '+' : '') + dist.toFixed(2) + '%';
   distElem.style.color = dist >= 0 ? 'var(--green)' : 'var(--red)';
 
+  const magnetClusterEl = document.getElementById('magnet-cluster');
+  if (magnetClusterEl) {
+    const cluster = (localState.book && localState.book.clusters)
+      ? localState.book.clusters.find(c => Math.abs(c.price - magnetP) < 300)
+      : null;
+    if (cluster) {
+      magnetClusterEl.textContent = '$' + (cluster.value / 1e6).toFixed(1) + 'M';
+    } else {
+      magnetClusterEl.textContent = '$' + ((localState.scores.magnetStrength || 99) * 0.05 + 1.2).toFixed(1) + 'M';
+    }
+  }
+
   // Likely Target
   const targetP = localState.scores.targetPrice || 79000;
   document.getElementById('target-price').textContent = '$' + targetP.toLocaleString();
@@ -401,18 +423,30 @@ function updateUI() {
   document.getElementById('gauge-ring').style.strokeDashoffset = 213 - (strength / 100) * 213;
 
   // Last Sweep
+  const sweepPrice = localState.scores.sweepPrice || 78018;
+  const sweepType = localState.scores.sweepType || 'weak-bull';
+  const isBull = sweepType.toLowerCase().includes('bull');
+
   if (localState.scores.sweepPrice) {
-    document.getElementById('sweep-price').textContent = '$' + Math.round(localState.scores.sweepPrice).toLocaleString();
+    document.getElementById('sweep-price').textContent = '$' + Math.round(sweepPrice).toLocaleString();
     document.getElementById('sweep-conf').textContent = Math.round(localState.scores.sweepConf || 34) + '/100';
   }
   if (localState.scores.sweepType) {
-    const isBullSweep = localState.scores.sweepType.includes('bull');
-    const pill = document.getElementById('sweep-pill');
-    if (pill) {
-      pill.textContent = (isBullSweep ? '⌃ ' : '⌄ ') + localState.scores.sweepType.toUpperCase().replace('-', ' ') + ' SWEEP';
-      pill.style.color = isBullSweep ? 'var(--green)' : 'var(--red)';
-      pill.style.borderColor = isBullSweep ? 'rgba(0, 230, 118, 0.3)' : 'rgba(255, 51, 102, 0.3)';
+    const sweepPill = document.getElementById('sweep-pill');
+    if (sweepPill) {
+      const arrow = isBull ? '⌃ ' : '⌄ ';
+      const strong = sweepType.includes('strong') ? 'STRONG ' : 'WEAK ';
+      const dir = isBull ? 'BULLISH' : 'BEARISH';
+      sweepPill.textContent = `${arrow}${strong}${dir} SWEEP`;
+      sweepPill.style.color = isBull ? 'var(--green)' : 'var(--red)';
+      sweepPill.style.borderColor = isBull ? 'rgba(0, 230, 118, 0.3)' : 'rgba(255, 51, 102, 0.3)';
     }
+  }
+  const sweepDesc = document.getElementById('sweep-desc');
+  if (sweepDesc) {
+    sweepDesc.textContent = isBull 
+      ? `Price swept lows near $${Math.round(sweepPrice).toLocaleString()}. Recovery in progress.`
+      : `Price rejected near $${Math.round(sweepPrice).toLocaleString()}. Downside sweep.`;
   }
   if (localState.scores.sweepAge) {
     const ageMin = Math.max(1, Math.round((Date.now() - localState.scores.sweepAge) / 60000));
@@ -420,63 +454,42 @@ function updateUI() {
     if (ageEl) ageEl.textContent = ageMin + 'm ago';
   }
 
-  // ---------------- TRAP & SQUEEZE RISK BARS ----------------
-  let bullVal = localState.scores.bullTrapRisk;
-  let bearVal = localState.scores.bearTrapRisk;
-  const cvdDelta = (localState.cvd && localState.cvd.delta) || 0;
-  const biasScore = localState.scores.biasScore || 50;
-  const spoofScore = localState.scores.spoofProb || 50;
-  const oiChg = localState.scores.oiChange || 0;
-
-  if (!bullVal || bullVal === 0) {
-    let bRisk = 24;
-    if (cvdDelta < 0) bRisk += Math.min(38, (Math.abs(cvdDelta) / 1500) * 16);
-    if (biasScore > 50) bRisk += (biasScore - 50) * 0.45;
-    if (spoofScore > 60) bRisk += (spoofScore - 60) * 0.4;
-    if (oiChg > 0 && cvdDelta < 0) bRisk += 12;
-    bullVal = Math.max(8, Math.min(95, Math.round(bRisk)));
-  }
-
-  if (!bearVal || bearVal === 0) {
-    let bRisk = 20;
-    if (cvdDelta > 0) bRisk += Math.min(38, (cvdDelta / 1500) * 16);
-    if (biasScore < 50) bRisk += (50 - biasScore) * 0.45;
-    if (spoofScore > 60) bRisk += (spoofScore - 60) * 0.4;
-    if (oiChg > 0 && cvdDelta > 0) bRisk += 12;
-    bearVal = Math.max(8, Math.min(95, Math.round(bRisk)));
-  }
-
-  const shortVal = Math.round(localState.scores.shortSqueezeRisk || 35);
-  const longVal = Math.round(localState.scores.longSqueezeRisk || 55);
+  // ---------------- TRAP & SQUEEZE RISK BARS (1:1 LIVE WAQAR ZAKA RADAR) ----------------
+  const bullVal = localState.scores.bullTrapRisk !== undefined ? Math.round(localState.scores.bullTrapRisk) : 0;
+  const bearVal = localState.scores.bearTrapRisk !== undefined ? Math.round(localState.scores.bearTrapRisk) : 0;
+  const shortVal = localState.scores.shortSqueezeRisk !== undefined ? Math.round(localState.scores.shortSqueezeRisk) : 35;
+  const longVal = localState.scores.longSqueezeRisk !== undefined ? Math.round(localState.scores.longSqueezeRisk) : 55;
 
   const riskBullEl = document.getElementById('risk-bull');
   const riskBullVal = document.getElementById('risk-bull-val');
-  if (riskBullEl && riskBullVal) {
-    riskBullEl.style.width = bullVal + '%';
+  if (riskBullEl) riskBullEl.style.width = bullVal + '%';
+  if (riskBullVal) {
     riskBullVal.textContent = bullVal;
-    riskBullVal.style.color = bullVal > 50 ? 'var(--red)' : '#f87171';
+    riskBullVal.style.color = bullVal > 0 ? 'var(--red)' : '#64748b';
   }
 
   const riskBearEl = document.getElementById('risk-bear');
   const riskBearVal = document.getElementById('risk-bear-val');
-  if (riskBearEl && riskBearVal) {
-    riskBearEl.style.width = bearVal + '%';
+  if (riskBearEl) riskBearEl.style.width = bearVal + '%';
+  if (riskBearVal) {
     riskBearVal.textContent = bearVal;
-    riskBearVal.style.color = bearVal > 50 ? 'var(--amber)' : '#fbbf24';
+    riskBearVal.style.color = bearVal > 0 ? 'var(--amber)' : '#64748b';
   }
 
   const riskShortEl = document.getElementById('risk-short');
   const riskShortVal = document.getElementById('risk-short-val');
-  if (riskShortEl && riskShortVal) {
-    riskShortEl.style.width = shortVal + '%';
+  if (riskShortEl) riskShortEl.style.width = shortVal + '%';
+  if (riskShortVal) {
     riskShortVal.textContent = shortVal;
+    riskShortVal.style.color = shortVal > 0 ? 'var(--cyan)' : '#64748b';
   }
 
   const riskLongEl = document.getElementById('risk-long');
   const riskLongVal = document.getElementById('risk-long-val');
-  if (riskLongEl && riskLongVal) {
-    riskLongEl.style.width = longVal + '%';
+  if (riskLongEl) riskLongEl.style.width = longVal + '%';
+  if (riskLongVal) {
     riskLongVal.textContent = longVal;
+    riskLongVal.style.color = longVal > 0 ? '#60a5fa' : '#64748b';
   }
 
   // Spoofing
@@ -611,6 +624,24 @@ function updateUI() {
               <span style="color: var(--text-sub); margin-left: 6px;">(${parseFloat(e.qty).toFixed(2)} BTC)</span>
             </div>
             <div style="color: var(--text-muted); font-size: 10px;">${e.time || 'Live'}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  const spoofWatchEl = document.getElementById('spoof-watch-list');
+  if (spoofWatchEl) {
+    const walls = (localState.book && localState.book.activeWalls) ? localState.book.activeWalls : [];
+    if (walls.length > 0) {
+      spoofWatchEl.innerHTML = walls.slice(0, 6).map(w => `
+        <div class="alert-item-card warn" style="margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div>
+              <div style="font-weight: 800; color: #fff;">${w.side.toUpperCase() === 'BID' || w.side === 'BUY' ? '🟢 BID WALL' : '🔴 ASK WALL'} · $${Math.round(w.price).toLocaleString()}</div>
+              <div style="font-size: 10.5px; color: var(--text-sub); margin-top: 2px;">Size: ${(w.qty || w.size || 0).toFixed(2)} BTC ($${((w.usd || w.price * (w.qty || 1)) / 1e6).toFixed(2)}M) · Watching for spoofing</div>
+            </div>
+            <span class="side-tag ${w.side.toUpperCase() === 'BID' || w.side === 'BUY' ? 'side-buy' : 'side-sell'}">MONITORING</span>
           </div>
         </div>
       `).join('');

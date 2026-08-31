@@ -155,31 +155,7 @@ function connectRadarWebSocket() {
               state.tradeCount = d.tradeCount || state.tradeCount;
 
               if (d.scores) {
-                state.scores = Object.assign(state.scores, d.scores);
-              }
-
-              // Dynamic real-time calculation of Bull Trap & Bear Trap Risk
-              const cvdDelta = (state.cvd && state.cvd.delta) || 0;
-              const bias = (state.scores && state.scores.biasScore) || 50;
-              const spoof = (state.scores && state.scores.spoofProb) || 50;
-              const oiChg = (state.scores && state.scores.oiChange) || 0;
-
-              if (!state.scores.bullTrapRisk || state.scores.bullTrapRisk === 0) {
-                let baseBull = 24;
-                if (cvdDelta < 0) baseBull += Math.min(38, (Math.abs(cvdDelta) / 1500) * 16);
-                if (bias > 50) baseBull += (bias - 50) * 0.45;
-                if (spoof > 60) baseBull += (spoof - 60) * 0.4;
-                if (oiChg > 0 && cvdDelta < 0) baseBull += 12;
-                state.scores.bullTrapRisk = Math.max(8, Math.min(95, Math.round(baseBull)));
-              }
-
-              if (!state.scores.bearTrapRisk || state.scores.bearTrapRisk === 0) {
-                let baseBear = 20;
-                if (cvdDelta > 0) baseBear += Math.min(38, (cvdDelta / 1500) * 16);
-                if (bias < 50) baseBear += (50 - bias) * 0.45;
-                if (spoof > 60) baseBear += (spoof - 60) * 0.4;
-                if (oiChg > 0 && cvdDelta > 0) baseBear += 12;
-                state.scores.bearTrapRisk = Math.max(8, Math.min(95, Math.round(baseBear)));
+                state.scores = Object.assign({}, state.scores, d.scores);
               }
 
               if (d.cvd) {
@@ -235,8 +211,6 @@ connectRadarWebSocket();
 // 3. BINANCE FUTURES REAL-TIME BACKUP STREAM
 // -------------------------------------------------------------
 function syncBinanceBackup() {
-  if (isWsConnected) return; // WebSocket is primary source
-
   https.get('https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=BTCUSDT', (res) => {
     let raw = '';
     res.on('data', c => raw += c);
@@ -244,10 +218,13 @@ function syncBinanceBackup() {
       try {
         const d = JSON.parse(raw);
         if (d.lastPrice) {
-          state.price = parseFloat(d.lastPrice);
-          state.high24 = parseFloat(d.highPrice);
-          state.low24 = parseFloat(d.lowPrice);
-          state.vol24 = parseFloat(d.quoteVolume);
+          if (!isWsConnected) {
+            state.price = parseFloat(d.lastPrice);
+            state.high24 = parseFloat(d.highPrice);
+            state.low24 = parseFloat(d.lowPrice);
+            state.vol24 = parseFloat(d.quoteVolume);
+          }
+          state.priceChangePercent = parseFloat(d.priceChangePercent || 0);
         }
       } catch(e) {}
     });
@@ -255,6 +232,7 @@ function syncBinanceBackup() {
 }
 
 setInterval(syncBinanceBackup, 1000);
+syncBinanceBackup();
 
 // -------------------------------------------------------------
 // 4. HTTP SSE SERVER
