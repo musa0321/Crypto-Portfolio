@@ -513,52 +513,8 @@ function updateUI() {
     document.getElementById('box-oi-chg').style.color = oic >= 0 ? 'var(--green)' : 'var(--red)';
   }
 
-  // Liquidity Target Zones (Exact 1:1 Live Waqar Zaka Design)
-  const listEl = document.getElementById('zones-list') || document.getElementById('zones-table-body');
-  if (listEl) {
-    const rawClusters = (localState.book && localState.book.clusters && localState.book.clusters.length > 0)
-      ? localState.book.clusters
-      : [
-          { price: 77200, value: 68500000, side: 'bid' },
-          { price: 77400, value: 63800000, side: 'bid' },
-          { price: 79200, value: 63200000, side: 'ask' },
-          { price: 78400, value: 61300000, side: 'ask' },
-          { price: 79400, value: 50100000, side: 'ask' },
-          { price: 76600, value: 49200000, side: 'bid' }
-        ];
-
-    // Sort clusters by USD value descending
-    const sorted = [...rawClusters].sort((a, b) => (b.value || 0) - (a.value || 0));
-    const maxVal = sorted[0].value || 1;
-
-    listEl.innerHTML = sorted.slice(0, 6).map((c) => {
-      const isAsk = c.side ? (c.side.toLowerCase() === 'ask' || c.side.toLowerCase() === 'sell') : (c.price >= p);
-      const arrow = isAsk ? '▲' : '▼';
-      const sideClass = isAsk ? 'sell' : 'buy';
-      const wallType = isAsk ? 'Sell Wall' : 'Buy Wall';
-      const valStr = '$' + (c.value / 1e6).toFixed(1) + 'M';
-      const pct = Math.max(15, Math.min(100, Math.round((c.value / maxVal) * 100)));
-      const score = '99/100';
-
-      return `
-        <div class="zone-row">
-          <div class="zone-price ${sideClass}">
-            <span style="font-size: 9.5px; opacity: 0.9;">${arrow}</span>
-            <span>$${Math.round(c.price).toLocaleString()}</span>
-          </div>
-          <div class="zone-bar-box">
-            <div class="zone-bar-fill ${sideClass}" style="width: ${pct}%;"></div>
-            <div class="zone-bar-label ${sideClass}">
-              ${wallType} · ${valStr}
-            </div>
-          </div>
-          <div class="zone-score ${sideClass}">
-            ${score}
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
+  // 4. Fully Dynamic Liquidity Target Zones Component
+  renderLiquidityTargetZones(p);
 
   // CVD Stats & Chart
   if (localState.cvd) {
@@ -685,6 +641,79 @@ function updateUI() {
       `;
     }).join('');
   }
+// -------------------------------------------------------------
+// 5. FULLY DYNAMIC LIQUIDITY TARGET ZONES COMPONENT
+// -------------------------------------------------------------
+function renderLiquidityTargetZones(currentPrice = 78173) {
+  const listEl = document.getElementById('zones-list') || document.getElementById('zones-table-body');
+  if (!listEl) return;
+
+  const currentPair = localState.symbol || 'BTCUSDT';
+  const step = currentPair.startsWith('ETH') ? 20 : (currentPair.startsWith('SOL') ? 2 : 200);
+
+  let rawClusters = (localState.book && localState.book.clusters && localState.book.clusters.length > 0)
+    ? [...localState.book.clusters]
+    : [];
+
+  if (rawClusters.length === 0) {
+    const base = Math.floor(currentPrice / step) * step;
+    rawClusters = [
+      { price: base + step * 5, value: 68500000, side: 'ask' },
+      { price: base + step * 3, value: 63200000, side: 'ask' },
+      { price: base + step, value: 50100000, side: 'ask' },
+      { price: base - step, value: 63800000, side: 'bid' },
+      { price: base - step * 3, value: 58000000, side: 'bid' },
+      { price: base - step * 5, value: 49200000, side: 'bid' }
+    ];
+  }
+
+  // Sort clusters by USD value descending
+  const sorted = [...rawClusters].sort((a, b) => (b.value || 0) - (a.value || 0));
+  const maxVal = sorted.length > 0 ? (sorted[0].value || 1) : 1;
+
+  listEl.innerHTML = sorted.slice(0, 6).map((c) => {
+    const isUpper = (c.price > currentPrice) || (c.side && (c.side.toLowerCase() === 'ask' || c.side.toLowerCase() === 'sell'));
+    const sideClass = isUpper ? 'upper' : 'lower';
+    const arrow = isUpper ? '▲' : '▼';
+    const badgeText = isUpper ? 'Short Squeeze Zone' : 'Long Flush Zone';
+    const badgeClass = isUpper ? 'squeeze' : 'flush';
+
+    // Real-time distance percentage & dollar offset
+    const priceDiff = c.price - currentPrice;
+    const diffPct = (priceDiff / currentPrice) * 100;
+    const sign = diffPct >= 0 ? '+' : '';
+    const diffDollarSign = priceDiff >= 0 ? '+$' : '-$';
+    const distStr = `${sign}${diffPct.toFixed(2)}% (${diffDollarSign}${Math.abs(Math.round(priceDiff)).toLocaleString()})`;
+
+    // Magnet intensity calculation
+    const valStr = '$' + (c.value / 1e6).toFixed(1) + 'M';
+    const intensity = Math.max(15, Math.min(100, Math.round((c.value / maxVal) * 100)));
+    const score = Math.max(90, Math.min(99, Math.round(intensity * 0.99))) + '/100';
+
+    return `
+      <div class="zone-row">
+        <div class="zone-price-col">
+          <div class="zone-price ${sideClass}">
+            <span style="font-size: 9.5px; opacity: 0.9;">${arrow}</span>
+            <span>$${Math.round(c.price).toLocaleString()}</span>
+          </div>
+          <div class="zone-dist ${sideClass}">
+            ${distStr}
+          </div>
+        </div>
+        <div class="zone-bar-box">
+          <div class="zone-bar-fill ${badgeClass}" style="width: ${intensity}%;"></div>
+          <div class="zone-bar-content">
+            <span class="zone-badge ${badgeClass}">${badgeText}</span>
+            <span class="zone-vol">${valStr}</span>
+          </div>
+        </div>
+        <div class="zone-score ${sideClass}">
+          ${score}
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 // Draw initial state immediately

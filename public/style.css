@@ -397,7 +397,7 @@ body {
   display: block;
 }
 
-/* ---------------- LIQUIDITY TARGET ZONES (EXACT 1:1 DESIGN) ---------------- */
+/* ---------------- LIQUIDITY TARGET ZONES (DYNAMIC COMPONENT) ---------------- */
 .zones-list {
   display: flex;
   flex-direction: column;
@@ -413,25 +413,46 @@ body {
   width: 100%;
   font-family: var(--font-mono);
   font-size: 11.5px;
-  height: 32px;
+  height: 34px;
+}
+
+.zone-price-col {
+  width: 165px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
 }
 
 .zone-price {
-  width: 90px;
-  flex-shrink: 0;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 11.5px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
-.zone-price.buy {
+.zone-price.upper, .zone-price.sell {
   color: #38bdf8;
 }
 
-.zone-price.sell {
+.zone-price.lower, .zone-price.buy {
   color: #fbbf24;
+}
+
+.zone-dist {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.zone-dist.upper {
+  color: var(--green);
+}
+
+.zone-dist.lower {
+  color: var(--red);
 }
 
 .zone-bar-box {
@@ -444,8 +465,9 @@ body {
   overflow: hidden;
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  margin: 0 12px;
+  justify-content: space-between;
+  padding: 0 10px;
+  margin: 0 8px;
 }
 
 .zone-bar-fill {
@@ -458,43 +480,66 @@ body {
   z-index: 0;
 }
 
-.zone-bar-fill.buy {
-  background: rgba(30, 64, 175, 0.45);
+.zone-bar-fill.upper, .zone-bar-fill.squeeze {
+  background: rgba(14, 116, 144, 0.35);
+  border-right: 2px solid rgba(56, 189, 248, 0.5);
 }
 
-.zone-bar-fill.sell {
-  background: rgba(146, 64, 14, 0.45);
+.zone-bar-fill.lower, .zone-bar-fill.flush {
+  background: rgba(180, 83, 9, 0.35);
+  border-right: 2px solid rgba(245, 158, 11, 0.5);
 }
 
-.zone-bar-label {
+.zone-bar-content {
   position: relative;
   z-index: 1;
-  font-size: 11.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
   font-weight: 700;
+}
+
+.zone-badge {
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
   letter-spacing: 0.3px;
+  text-transform: uppercase;
 }
 
-.zone-bar-label.buy {
-  color: #38bdf8;
+.zone-badge.squeeze {
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 240, 255, 0.3);
 }
 
-.zone-bar-label.sell {
-  color: #fbbf24;
+.zone-badge.flush {
+  background: rgba(255, 170, 0, 0.15);
+  color: var(--amber);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+}
+
+.zone-vol {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #f8fafc;
 }
 
 .zone-score {
-  width: 55px;
+  width: 50px;
   text-align: right;
   flex-shrink: 0;
   font-weight: 800;
   font-size: 11px;
 }
 
-.zone-score.buy {
+.zone-score.upper, .zone-score.sell {
   color: #38bdf8;
 }
 
-.zone-score.sell {
+.zone-score.lower, .zone-score.buy {
   color: #fbbf24;
 }
 
