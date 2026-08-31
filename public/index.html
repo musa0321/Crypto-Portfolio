@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Liquidity Radar - BTCUSDT Perp (Live Binance Futures)</title>
+  <title>Liquidity Radar - Waqar Zaka (Live Binance Futures)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800;900&display=swap" rel="stylesheet">
@@ -11,402 +11,451 @@
 </head>
 <body>
 
-<div class="radar-app">
-  <!-- TOP NAVIGATION HEADER -->
-  <header class="header">
-    <div class="brand">
-      <div class="brand-icon">₿</div>
+<div class="page-wrapper">
+  <!-- SITE TOP NAVBAR -->
+  <header class="site-nav">
+    <div class="site-brand">
+      <div class="wz-logo-icon">⚡</div>
       <div>
-        <div class="brand-name">LIQUIDITY RADAR</div>
-        <div class="brand-sub">BTCUSDT PERP · BINANCE FUTURES (LIVE)</div>
+        <div class="site-title">Waqar Zaka</div>
+        <div class="site-subtitle">LET'S GET RICH WEB 3.0</div>
       </div>
     </div>
 
-    <nav class="tabs-nav">
-      <button class="tab-btn active" id="tab-btn-main" onclick="switchTab('main')">RADAR</button>
-      <button class="tab-btn" id="tab-btn-advanced" onclick="switchTab('advanced')">ADVANCED</button>
-      <button class="tab-btn" id="tab-btn-events" onclick="switchTab('events')">ORDER EVENTS</button>
-      <button class="tab-btn" id="tab-btn-alerts" onclick="switchTab('alerts')">ALERTS <span class="tab-badge" id="alerts-badge">5</span></button>
+    <nav class="site-links">
+      <a href="#" class="site-link">📺 Channels</a>
+      <a href="#" class="site-link">💼 Services</a>
+      <a href="#" class="site-link">📈 Market</a>
+      <a href="#" class="site-link active">🎯 Liquidity Radar</a>
+      <a href="#" class="site-link">💳 Subscription</a>
+      <a href="#" class="site-link">📊 Dashboard</a>
     </nav>
 
-    <div class="statusbar">
-      <div class="live-pill">
-        <div class="live-dot"></div>
-        <span id="conn-status">LIVE</span>
-      </div>
-      <div class="status-stat">OI <span class="status-val" id="top-oi">$8.48B</span></div>
-      <div class="status-stat">FR <span class="status-val green" id="top-fr">+0.0054%</span></div>
-      <div class="status-stat">SPR <span class="status-val cyan" id="top-spr">$0.1</span></div>
-      <div class="status-stat">TRD <span class="status-val cyan" id="top-trd">8423</span></div>
-      <div id="utc-clock" style="color: #94a3b8; font-weight: 600;">00:00:00 UTC</div>
+    <div class="site-actions">
+      <button class="btn-mobile-app">MOBILE APP</button>
+      <button class="btn-user-pill">MD MUSA ⚙</button>
     </div>
   </header>
 
-  <!-- ==================== TAB 1: MAIN RADAR VIEW ==================== -->
-  <main id="tab-main" class="grid-container">
-    <!-- LEFT COLUMN -->
-    <section class="col">
-      <!-- 1. Hero Card -->
+  <!-- RADAR APP CONTAINER -->
+  <div class="radar-app">
+    <!-- SUB NAVIGATION HEADER -->
+    <div class="header">
+      <div class="brand">
+        <div class="brand-icon">₿</div>
+        <div>
+          <div class="brand-name">LIQUIDITY RADAR</div>
+          <div class="brand-sub">BTCUSDT PERP · BINANCE FUTURES (LIVE)</div>
+        </div>
+      </div>
+
+      <nav class="tabs-nav">
+        <button class="tab-btn active" id="tab-btn-main" onclick="switchTab('main')">RADAR</button>
+        <button class="tab-btn" id="tab-btn-advanced" onclick="switchTab('advanced')">ADVANCED</button>
+        <button class="tab-btn" id="tab-btn-events" onclick="switchTab('events')">ORDER EVENTS</button>
+        <button class="tab-btn" id="tab-btn-alerts" onclick="switchTab('alerts')">ALERTS <span class="tab-badge" id="alerts-badge">5</span></button>
+      </nav>
+
+      <div class="statusbar">
+        <div class="live-pill">
+          <div class="live-dot"></div>
+          <span id="conn-status">LIVE</span>
+        </div>
+        <div class="status-stat">OI <span class="status-val" id="top-oi">$8.30B</span></div>
+        <div class="status-stat">FR <span class="status-val green" id="top-fr">+0.0054%</span></div>
+        <div class="status-stat">SPR <span class="status-val cyan" id="top-spr">$0.1</span></div>
+        <div class="status-stat">TRD <span class="status-val cyan" id="top-trd">7843</span></div>
+        <div id="utc-clock" style="color: #94a3b8; font-weight: 600;">00:00:00 UTC</div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 1: MAIN RADAR VIEW ==================== -->
+    <main id="tab-main" class="grid-container">
+      <!-- LEFT COLUMN -->
+      <section class="col">
+        <!-- 1. Hero Card -->
+        <div class="card">
+          <div class="hero-wrapper">
+            <div>
+              <div class="hero-tag-row">
+                <span class="indicator-dot dot-green"></span>
+                BTCUSDT PERPETUAL
+                <span class="bias-chip chip-strong-bear" id="bias-chip">STRONG BEARISH</span>
+              </div>
+
+              <div class="hero-price-row">
+                <span class="hero-price" id="hero-price">$78,173</span>
+                <span class="hero-change chip-bear" id="hero-change">-0.05%</span>
+              </div>
+
+              <div class="stats-bar">
+                <span>24H HIGH <strong id="stat-high">$81,950</strong></span>
+                <span>24H LOW <strong id="stat-low">$59,060</strong></span>
+                <span>VOLUME <strong id="stat-vol">$18.83B</strong></span>
+                <span>MARK <strong id="stat-mark">$59,751</strong></span>
+              </div>
+
+              <div class="bias-section">
+                <div class="bias-title-row">
+                  <span>MARKET BIAS</span>
+                  <button class="btn-why" onclick="toggleExplainer('biasExp')">?</button>
+                </div>
+                <div class="bias-label-row">
+                  <span style="color: var(--cyan);" id="bias-buy-text">31.3% BUY</span>
+                  <span style="color: var(--text-muted);" id="bias-mid-text">31.3 / 100</span>
+                  <span style="color: var(--red);" id="bias-sell-text">68.7% SELL</span>
+                </div>
+                <div class="bias-track">
+                  <div class="bias-buy-fill" id="bias-buy-bar" style="width: 31.3%;"></div>
+                  <div class="bias-sell-fill" id="bias-sell-bar" style="width: 68.7%;"></div>
+                </div>
+                <div class="info-explain" id="biasExp">
+                  Market bias is calculated from live trade flow (aggressive buys vs sells), order book imbalance within 0.2% of price, and CVD slope. A score above 60 means buy pressure dominates.
+                </div>
+              </div>
+            </div>
+
+            <div class="confidence-box">
+              <div class="confidence-num" id="confidence-val">69</div>
+              <div class="confidence-lbl">CONFIDENCE<br>/ 100</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Magnet, Likely Target, Market Strength -->
+        <div class="grid-3col">
+          <!-- Liquidity Magnet -->
+          <div class="card">
+            <div class="card-header">
+              <div class="header-left"><span class="indicator-dot dot-green"></span> LIQUIDITY MAGNET</div>
+            </div>
+            <div class="metric-lg" style="color: var(--cyan);" id="magnet-price">$79,200</div>
+            <div class="metric-desc">Largest stop order and liquidation cluster. Price is pulled toward this level.</div>
+            <div class="card-divider"></div>
+            <div class="kv-row">
+              <span>Distance</span>
+              <span class="kv-val" style="color: var(--green);" id="magnet-dist">+1.32%</span>
+            </div>
+            <div class="kv-row">
+              <span>Cluster $</span>
+              <span class="kv-val" id="magnet-cluster">$5.0M</span>
+            </div>
+          </div>
+
+          <!-- Likely Target -->
+          <div class="card">
+            <div class="card-header">
+              <div class="header-left"><span class="indicator-dot dot-amber"></span> LIKELY TARGET</div>
+            </div>
+            <div class="metric-lg" style="color: var(--amber);" id="target-price">$77,200</div>
+            <div class="metric-desc">Highest-probability level based on OB density, OI clusters, and CVD direction.</div>
+            <div class="card-divider"></div>
+            <div class="kv-row">
+              <span>Score</span>
+              <span class="bias-chip chip-bear" id="target-score">97/100</span>
+            </div>
+            <div class="kv-row">
+              <span>Type</span>
+              <span class="kv-val" style="color: var(--amber);" id="target-type">Support Sweep ▼</span>
+            </div>
+          </div>
+
+          <!-- Market Strength -->
+          <div class="card gauge-box">
+            <div class="card-header" style="align-self: flex-start; width: 100%;">
+              <div class="header-left">MARKET STRENGTH</div>
+            </div>
+            <div style="position: relative; width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; margin: 4px 0;">
+              <svg width="84" height="84" viewBox="0 0 84 84">
+                <circle cx="42" cy="42" r="34" fill="none" stroke="#141b2c" stroke-width="6.5" />
+                <circle cx="42" cy="42" r="34" fill="none" stroke="url(#cyanGrad)" stroke-width="6.5"
+                        stroke-dasharray="213" stroke-dashoffset="117" stroke-linecap="round"
+                        id="gauge-ring" style="transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 0.6s;" />
+                <defs>
+                  <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00f0ff" />
+                    <stop offset="100%" stop-color="#0284c7" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="gauge-content" style="top: 25px;">
+                <div class="gauge-score" id="strength-score">45</div>
+                <div class="gauge-tag" id="strength-tag">MODERATE</div>
+              </div>
+            </div>
+            <div class="metric-desc" id="strength-desc" style="text-align: center; margin-top: 2px; min-height: unset;">
+              Mixed signals — monitor closely.
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Sweep & Trap/Squeeze Risk -->
+        <div class="grid-2col">
+          <!-- Last Liquidity Sweep -->
+          <div class="card">
+            <div class="card-header">
+              <div class="header-left">LAST LIQUIDITY SWEEP</div>
+              <button class="btn-why" onclick="toggleExplainer('sweepExp')">?</button>
+            </div>
+            <div class="sweep-pill" id="sweep-pill">⌃ WEAK BULLISH SWEEP</div>
+            <div class="metric-desc" id="sweep-desc">Price swept $78,013. Moderate recovery.</div>
+            <div class="card-divider" style="margin-top: 12px;"></div>
+            <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 9.5px; margin-top: 6px;">
+              <div><span style="color:var(--text-muted)">AT PRICE</span><br><strong style="color:#fff" id="sweep-price">$78,013</strong></div>
+              <div><span style="color:var(--text-muted)">CONFIDENCE</span><br><strong style="color:var(--amber)" id="sweep-conf">34/100</strong></div>
+              <div><span style="color:var(--text-muted)">AGE</span><br><strong style="color:#fff" id="sweep-age">10m ago</strong></div>
+            </div>
+            <div class="info-explain" id="sweepExp">
+              A liquidity sweep occurs when price breaks a previous high or low, triggers clustered stop-loss orders and liquidations, then quickly reverses.
+            </div>
+          </div>
+
+          <!-- Trap & Squeeze Risk -->
+          <div class="card">
+            <div class="card-header">
+              <div class="header-left">TRAP & SQUEEZE RISK</div>
+              <button class="btn-why" onclick="toggleExplainer('trapExp')">?</button>
+            </div>
+            <div class="risk-item">
+              <span>Bull Trap</span>
+              <div class="risk-track"><div class="risk-fill" id="risk-bull" style="width: 40%; background: var(--cyan);"></div></div>
+              <span class="risk-val" style="color: var(--cyan);" id="risk-bull-val">40</span>
+            </div>
+            <div class="risk-item">
+              <span>Bear Trap</span>
+              <div class="risk-track"><div class="risk-fill" id="risk-bear" style="width: 0%; background: var(--amber);"></div></div>
+              <span class="risk-val" style="color: var(--amber);" id="risk-bear-val">0</span>
+            </div>
+            <div class="risk-item">
+              <span>Short Squeeze</span>
+              <div class="risk-track"><div class="risk-fill" id="risk-short" style="width: 35%; background: var(--cyan);"></div></div>
+              <span class="risk-val" style="color: var(--cyan);" id="risk-short-val">35</span>
+            </div>
+            <div class="risk-item">
+              <span>Long Squeeze</span>
+              <div class="risk-track"><div class="risk-fill" id="risk-long" style="width: 55%; background: var(--blue);"></div></div>
+              <span class="risk-val" style="color: #60a5fa;" id="risk-long-val">55</span>
+            </div>
+            <div class="info-explain" id="trapExp">
+              Bull Trap = price up but CVD not confirming. Bear Trap = price down but CVD showing hidden buying. Squeeze = forced position closures.
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Liquidity Target Zones (1:1 Match) -->
+        <div class="card">
+          <div class="card-header">
+            <div class="header-left">LIQUIDITY TARGET ZONES</div>
+            <button class="btn-why" onclick="toggleExplainer('targetExp')">?</button>
+          </div>
+          <div class="metric-desc" style="min-height: unset; margin-bottom: 6px;">Largest order clusters from live order book — price gravitates toward these levels.</div>
+          <div class="info-explain" id="targetExp" style="margin-bottom: 8px;">
+            These zones are built from real-time order book data. Each bar represents a $200-wide price cluster with the total USD value of resting orders.
+          </div>
+          <div class="zones-list" id="zones-list">
+            <!-- Dynamically populated from live cluster stream -->
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN -->
+      <section class="col">
+        <!-- 1. Live Radar Spider Chart -->
+        <div class="card">
+          <div class="card-header">
+            <div class="header-left"><span class="indicator-dot dot-red"></span> LIVE RADAR</div>
+          </div>
+          <div class="radar-center">
+            <canvas id="radarCanvas" width="270" height="270"></canvas>
+          </div>
+        </div>
+
+        <!-- 2. Possible Spoofing Detection -->
+        <div class="card">
+          <div class="card-header">
+            <div class="header-left"><span class="indicator-dot dot-red"></span> POSSIBLE SPOOFING</div>
+            <button class="btn-why" onclick="toggleExplainer('spoofExp')">?</button>
+          </div>
+          <div class="spoof-main">
+            <div>
+              <div class="spoof-number" id="spoof-prob">98/100</div>
+              <div style="font-size: 8px; font-weight: 800; color: var(--text-muted);">PROBABILITY</div>
+            </div>
+            <div class="metric-desc" style="margin-bottom:0;" id="spoof-desc">
+              $35.9 BTC bid wall at $77,945 — cancelled after 0.4s, 0% filled
+            </div>
+          </div>
+
+          <div class="spoof-hist" id="spoof-histogram"></div>
+          <div class="info-explain" id="spoofExp">
+            Score factors: cancellation speed, proximity to price, order size, fill percentage, and repeat behavior at same price.
+          </div>
+          <div style="font-size: 8.5px; color: #475569; margin-top: 4px;">⚠️ Probability estimate only — not financial advice.</div>
+        </div>
+
+        <!-- 3. Funding Rate + Open Interest -->
+        <div class="card">
+          <div class="card-header">
+            <div class="header-left">FUNDING RATE + OPEN INTEREST</div>
+          </div>
+          <div class="metric-lg" style="color: var(--green);" id="card-fr">+0.0054%</div>
+          <div class="metric-desc" style="min-height: unset; margin-bottom: 10px;">Neutral funding rate. No extreme lean.</div>
+          <div class="card-divider"></div>
+          <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); text-align: center; margin-top: 6px;">
+            <div><div class="kv-val" style="color: var(--cyan); font-size: 12.5px;" id="box-oi">$8.30B</div><div style="font-size:7.5px; color:var(--text-muted)">OPEN INT.</div></div>
+            <div><div class="kv-val" style="color: var(--red); font-size: 12.5px;" id="box-oi-chg">-0.03%</div><div style="font-size:7.5px; color:var(--text-muted)">OI CHANGE</div></div>
+            <div><div class="kv-val" style="font-size: 12.5px;" id="box-sweep-prob">80%</div><div style="font-size:7.5px; color:var(--text-muted)">NEXT SWEEP</div></div>
+          </div>
+        </div>
+
+        <!-- 4. CVD - Cumulative Volume Delta -->
+        <div class="card">
+          <div class="card-header">
+            <div class="header-left">CVD — VOLUME DELTA</div>
+            <button class="btn-why" onclick="toggleExplainer('cvdExp')">?</button>
+          </div>
+          <div class="cvd-wrapper">
+            <canvas id="cvdCanvas" width="340" height="65"></canvas>
+          </div>
+          <div class="cvd-foot">
+            <div><span style="color: var(--green);" id="cvd-buy">3274950.96</span><br><span style="font-size:7px; color:var(--text-muted)">BTC BUY VOL</span></div>
+            <div><span style="color: var(--red);" id="cvd-sell">3312159.20</span><br><span style="font-size:7px; color:var(--text-muted)">BTC SELL VOL</span></div>
+            <div><span style="color: var(--red);" id="cvd-delta">-37208.24</span><br><span style="font-size:7px; color:var(--text-muted)">BTC DELTA</span></div>
+            <div><span style="color: var(--red);" id="cvd-trend">Bearish ↓</span><br><span style="font-size:7px; color:var(--text-muted)">TREND</span></div>
+          </div>
+          <div class="info-explain" id="cvdExp">
+            CVD = aggressive buys minus aggressive sells, cumulative. Rising CVD = more money entering via market buys.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== TAB 2: ADVANCED VIEW ==================== -->
+    <main id="tab-advanced" class="col" style="display: none;">
+      <!-- Order Book Depth (Asks & Bids) -->
       <div class="card">
-        <div class="hero-wrapper">
+        <div class="depth-book-grid">
+          <!-- Asks (Sell Walls) -->
           <div>
-            <div class="hero-tag-row">
-              <span class="indicator-dot dot-green"></span>
-              BTCUSDT PERPETUAL
-              <span class="bias-chip chip-neutral" id="bias-chip">NEUTRAL</span>
-            </div>
-
-            <div class="hero-price-row">
-              <span class="hero-price" id="hero-price">$78,048</span>
-              <span class="hero-change chip-bull" id="hero-change">+0.02%</span>
-            </div>
-
-            <div class="stats-bar">
-              <span>24H HIGH <strong id="stat-high">$61,931</strong></span>
-              <span>24H LOW <strong id="stat-low">$59,060</strong></span>
-              <span>VOLUME <strong id="stat-vol">$18.83B</strong></span>
-              <span>MARK <strong id="stat-mark">$59,751</strong></span>
-            </div>
-
-            <div class="bias-section">
-              <div class="bias-title-row">
-                <span>MARKET BIAS</span>
-                <button class="btn-why" onclick="toggleExplainer('biasExp')">?</button>
-              </div>
-              <div class="bias-label-row">
-                <span style="color: var(--cyan);" id="bias-buy-text">48.0% BUY</span>
-                <span style="color: var(--text-muted);" id="bias-mid-text">48.0 / 100</span>
-                <span style="color: var(--red);" id="bias-sell-text">52.0% SELL</span>
-              </div>
-              <div class="bias-track">
-                <div class="bias-buy-fill" id="bias-buy-bar" style="width: 48.0%;"></div>
-                <div class="bias-sell-fill" id="bias-sell-bar" style="width: 52.0%;"></div>
-              </div>
-              <div class="info-explain" id="biasExp">
-                Market bias is calculated from live trade flow (aggressive buys vs sells), order book imbalance within 0.2% of price, and CVD slope. A score above 60 means buy pressure dominates.
-              </div>
-            </div>
+            <div class="card-header" style="color: #f87171;">ORDER BOOK — ASKS (SELL WALLS)</div>
+            <table class="depth-table">
+              <thead>
+                <tr><th>PRICE</th><th>SIZE (BTC)</th><th>DEPTH ($)</th></tr>
+              </thead>
+              <tbody id="advanced-asks-body"></tbody>
+            </table>
           </div>
 
-          <div class="confidence-box">
-            <div class="confidence-num" id="confidence-val">65</div>
-            <div class="confidence-lbl">CONFIDENCE<br>/ 100</div>
+          <!-- Bids (Buy Walls) -->
+          <div>
+            <div class="card-header" style="color: #38bdf8;">ORDER BOOK — BIDS (BUY WALLS)</div>
+            <table class="depth-table">
+              <thead>
+                <tr><th>PRICE</th><th>SIZE (BTC)</th><th>DEPTH ($)</th></tr>
+              </thead>
+              <tbody id="advanced-bids-body"></tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      <!-- 2. Magnet, Likely Target, Market Strength -->
-      <div class="grid-3col">
-        <!-- Liquidity Magnet -->
-        <div class="card">
-          <div class="card-header">
-            <div class="header-left"><span class="indicator-dot dot-green"></span> LIQUIDITY MAGNET</div>
-          </div>
-          <div class="metric-lg" style="color: var(--cyan);" id="magnet-price">$77,000</div>
-          <div class="metric-desc">Largest stop order and liquidation cluster. Price is pulled toward this level.</div>
-          <div class="card-divider"></div>
-          <div class="kv-row">
-            <span>Distance</span>
-            <span class="kv-val" style="color: var(--red);" id="magnet-dist">-1.34%</span>
-          </div>
-          <div class="kv-row">
-            <span>Cluster $</span>
-            <span class="kv-val" id="magnet-cluster">$5.0M</span>
-          </div>
-        </div>
-
-        <!-- Likely Target -->
-        <div class="card">
-          <div class="card-header">
-            <div class="header-left"><span class="indicator-dot dot-amber"></span> LIKELY TARGET</div>
-          </div>
-          <div class="metric-lg" style="color: var(--amber);" id="target-price">$79,000</div>
-          <div class="metric-desc">Highest-probability level based on OB density, OI clusters, and CVD direction.</div>
-          <div class="card-divider"></div>
-          <div class="kv-row">
-            <span>Score</span>
-            <span class="bias-chip chip-bear" id="target-score">97/100</span>
-          </div>
-          <div class="kv-row">
-            <span>Type</span>
-            <span class="kv-val" style="color: var(--amber);" id="target-type">Stop Hunt Zone ▲</span>
-          </div>
-        </div>
-
-        <!-- Market Strength -->
-        <div class="card gauge-box">
-          <div class="card-header" style="align-self: flex-start; width: 100%;">
-            <div class="header-left">MARKET STRENGTH</div>
-          </div>
-          <div style="position: relative; width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; margin: 4px 0;">
-            <svg width="84" height="84" viewBox="0 0 84 84">
-              <circle cx="42" cy="42" r="34" fill="none" stroke="#141b2c" stroke-width="6.5" />
-              <circle cx="42" cy="42" r="34" fill="none" stroke="url(#cyanGrad)" stroke-width="6.5"
-                      stroke-dasharray="213" stroke-dashoffset="113" stroke-linecap="round"
-                      id="gauge-ring" style="transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 0.6s;" />
-              <defs>
-                <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#00f0ff" />
-                  <stop offset="100%" stop-color="#0284c7" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div class="gauge-content" style="top: 25px;">
-              <div class="gauge-score" id="strength-score">47</div>
-              <div class="gauge-tag" id="strength-tag">MODERATE</div>
-            </div>
-          </div>
-          <div class="metric-desc" id="strength-desc" style="text-align: center; margin-top: 2px; min-height: unset;">
-            Mixed signals — monitor closely.
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. Sweep & Trap/Squeeze Risk -->
+      <!-- Liquidation Map & Extended CVD -->
       <div class="grid-2col">
-        <!-- Last Liquidity Sweep -->
         <div class="card">
-          <div class="card-header">
-            <div class="header-left">LAST LIQUIDITY SWEEP</div>
-            <button class="btn-why" onclick="toggleExplainer('sweepExp')">?</button>
-          </div>
-          <div class="sweep-pill" id="sweep-pill">⌃ WEAK BULLISH SWEEP</div>
-          <div class="metric-desc" id="sweep-desc">Price swept $78,013. Moderate recovery.</div>
-          <div class="card-divider" style="margin-top: 12px;"></div>
-          <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 9.5px; margin-top: 6px;">
-            <div><span style="color:var(--text-muted)">AT PRICE</span><br><strong style="color:#fff" id="sweep-price">$78,013</strong></div>
-            <div><span style="color:var(--text-muted)">CONFIDENCE</span><br><strong style="color:var(--amber)" id="sweep-conf">34/100</strong></div>
-            <div><span style="color:var(--text-muted)">AGE</span><br><strong style="color:#fff" id="sweep-age">10m ago</strong></div>
-          </div>
-          <div class="info-explain" id="sweepExp">
-            A liquidity sweep occurs when price breaks a previous high or low, triggers clustered stop-loss orders and liquidations, then quickly reverses.
+          <div class="card-header">LIQUIDATION MAP</div>
+          <div class="metric-desc" style="margin-top: 8px;">Estimated levels where leveraged positions get force-closed.</div>
+          <div style="padding: 20px 0; color: var(--text-muted); font-size: 10.5px; text-align: center;">
+            Loading liquidation data...
           </div>
         </div>
 
-        <!-- Trap & Squeeze Risk -->
         <div class="card">
-          <div class="card-header">
-            <div class="header-left">TRAP & SQUEEZE RISK</div>
-            <button class="btn-why" onclick="toggleExplainer('trapExp')">?</button>
-          </div>
-          <div class="risk-item">
-            <span>Bull Trap</span>
-            <div class="risk-track"><div class="risk-fill" id="risk-bull" style="width: 0%; background: var(--red);"></div></div>
-            <span class="risk-val" style="color: var(--red);" id="risk-bull-val">0</span>
-          </div>
-          <div class="risk-item">
-            <span>Bear Trap</span>
-            <div class="risk-track"><div class="risk-fill" id="risk-bear" style="width: 0%; background: var(--amber);"></div></div>
-            <span class="risk-val" style="color: var(--amber);" id="risk-bear-val">0</span>
-          </div>
-          <div class="risk-item">
-            <span>Short Squeeze</span>
-            <div class="risk-track"><div class="risk-fill" id="risk-short" style="width: 35%; background: var(--cyan);"></div></div>
-            <span class="risk-val" style="color: var(--cyan);" id="risk-short-val">35</span>
-          </div>
-          <div class="risk-item">
-            <span>Long Squeeze</span>
-            <div class="risk-track"><div class="risk-fill" id="risk-long" style="width: 55%; background: var(--blue);"></div></div>
-            <span class="risk-val" style="color: #60a5fa;" id="risk-long-val">55</span>
-          </div>
-          <div class="info-explain" id="trapExp">
-            Bull Trap = price up but CVD not confirming. Bear Trap = price down but CVD showing hidden buying. Squeeze = forced position closures.
+          <div class="card-header">CVD — EXTENDED SESSION VIEW</div>
+          <div style="height: 130px; width: 100%; margin-top: 6px;">
+            <canvas id="cvdExtendedCanvas" width="580" height="130"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- 4. Liquidity Target Zones -->
+      <!-- Active Walls Table -->
       <div class="card">
-        <div class="card-header">
-          <div class="header-left">LIQUIDITY TARGET ZONES</div>
-          <button class="btn-why" onclick="toggleExplainer('targetExp')">?</button>
+        <div class="card-header">ACTIVE WALLS — LARGE RESTING ORDERS</div>
+        <div class="metric-desc" style="min-height: unset;">Orders >= 8 BTC within 2% of current price, sorted by size.</div>
+        <table class="active-walls-table">
+          <thead>
+            <tr>
+              <th>PRICE</th>
+              <th>SIDE</th>
+              <th>SIZE (BTC)</th>
+              <th>VALUE ($)</th>
+              <th>DISTANCE</th>
+              <th style="width: 25%;">DEPTH</th>
+            </tr>
+          </thead>
+          <tbody id="active-walls-body"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- ==================== TAB 3: ORDER EVENTS VIEW ==================== -->
+    <main id="tab-events" class="col" style="display: none;">
+      <div class="order-events-grid">
+        <!-- Left: Large Order Flow Stream -->
+        <div class="card">
+          <div class="card-header">LARGE ORDER FLOW — LIVE LOG</div>
+          <div class="metric-desc" style="min-height: unset; margin-bottom: 10px;">Every order >= 2 BTC that appears, fills, moves, or cancels.</div>
+          <div class="stream-card-list" id="order-events-stream"></div>
         </div>
-        <div class="metric-desc" style="min-height: unset; margin-bottom: 6px;">Largest order clusters from live order book — price gravitates toward these levels.</div>
-        <div class="info-explain" id="targetExp" style="margin-bottom: 8px;">
-          These zones are built from real-time order book data. Each bar represents a $200-wide price cluster with the total USD value of resting orders.
-        </div>
-        <div class="zones-list" id="zones-list">
-          <!-- Dynamically populated from live cluster stream -->
+
+        <!-- Right: Active Spoof Watch Monitoring -->
+        <div class="card">
+          <div class="card-header">ACTIVE SPOOF WATCH — MONITORING</div>
+          <div class="metric-desc" style="min-height: unset; margin-bottom: 10px;">Large orders (>= 5 BTC) being watched for suspicious behavior.</div>
+          <div id="spoof-watch-list"></div>
         </div>
       </div>
-    </section>
+    </main>
 
-    <!-- RIGHT COLUMN -->
-    <section class="col">
-      <!-- 1. Live Radar Spider Chart -->
+    <!-- ==================== TAB 4: ALERTS VIEW ==================== -->
+    <main id="tab-alerts" class="col" style="display: none;">
       <div class="card">
-        <div class="card-header">
-          <div class="header-left"><span class="indicator-dot dot-red"></span> LIVE RADAR</div>
+        <div class="card-header">ALERT SETTINGS</div>
+        <div class="alerts-settings-box">
+          <label class="filter-check"><input type="checkbox" id="chk-sweep" checked> Liquidity Sweep (conf >=55)</label>
+          <label class="filter-check"><input type="checkbox" id="chk-spoof" checked> Possible Spoofing (prob >=70)</label>
+          <label class="filter-check"><input type="checkbox" id="chk-target" checked> Liquidity Target (score >=75)</label>
+          <label class="filter-check"><input type="checkbox" id="chk-squeeze" checked> Squeeze Risk (>=75)</label>
         </div>
-        <div class="radar-center">
-          <canvas id="radarCanvas" width="270" height="270"></canvas>
-        </div>
+
+        <div class="card-header" style="margin-top: 8px;">ALERT LOG · <span id="alerts-total-count">5 TOTAL</span></div>
+        <div class="stream-card-list" id="alerts-feed-list"></div>
       </div>
+    </main>
+  </div>
 
-      <!-- 2. Possible Spoofing Detection -->
-      <div class="card">
-        <div class="card-header">
-          <div class="header-left"><span class="indicator-dot dot-red"></span> POSSIBLE SPOOFING</div>
-          <button class="btn-why" onclick="toggleExplainer('spoofExp')">?</button>
-        </div>
-        <div class="spoof-main">
-          <div>
-            <div class="spoof-number" id="spoof-prob">98/100</div>
-            <div style="font-size: 8px; font-weight: 800; color: var(--text-muted);">PROBABILITY</div>
-          </div>
-          <div class="metric-desc" style="margin-bottom:0;" id="spoof-desc">
-            $35.7 BTC ask wall at $78,345 — cancelled after 0.1s, 0% filled
-          </div>
-        </div>
-
-        <div class="spoof-hist" id="spoof-histogram"></div>
-        <div class="info-explain" id="spoofExp">
-          Score factors: cancellation speed, proximity to price, order size, fill percentage, and repeat behavior at same price.
-        </div>
-        <div style="font-size: 8.5px; color: #475569; margin-top: 4px;">⚠️ Probability estimate only — not financial advice.</div>
-      </div>
-
-      <!-- 3. Funding Rate + Open Interest -->
-      <div class="card">
-        <div class="card-header">
-          <div class="header-left">FUNDING RATE + OPEN INTEREST</div>
-        </div>
-        <div class="metric-lg" style="color: var(--green);" id="card-fr">+0.0054%</div>
-        <div class="metric-desc" style="min-height: unset; margin-bottom: 10px;">Neutral funding rate. No extreme lean.</div>
-        <div class="card-divider"></div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); text-align: center; margin-top: 6px;">
-          <div><div class="kv-val" style="color: var(--cyan); font-size: 12.5px;" id="box-oi">$8.48B</div><div style="font-size:7.5px; color:var(--text-muted)">OPEN INT.</div></div>
-          <div><div class="kv-val" style="color: var(--green); font-size: 12.5px;" id="box-oi-chg">+0.01%</div><div style="font-size:7.5px; color:var(--text-muted)">OI CHANGE</div></div>
-          <div><div class="kv-val" style="font-size: 12.5px;" id="box-sweep-prob">79%</div><div style="font-size:7.5px; color:var(--text-muted)">NEXT SWEEP</div></div>
-        </div>
-      </div>
-
-      <!-- 4. CVD - Cumulative Volume Delta -->
-      <div class="card">
-        <div class="card-header">
-          <div class="header-left">CVD — VOLUME DELTA</div>
-          <button class="btn-why" onclick="toggleExplainer('cvdExp')">?</button>
-        </div>
-        <div class="cvd-wrapper">
-          <canvas id="cvdCanvas" width="340" height="65"></canvas>
-        </div>
-        <div class="cvd-foot">
-          <div><span style="color: var(--green);" id="cvd-buy">3139578.91</span><br><span style="font-size:7px; color:var(--text-muted)">BTC BUY VOL</span></div>
-          <div><span style="color: var(--red);" id="cvd-sell">3177617.72</span><br><span style="font-size:7px; color:var(--text-muted)">BTC SELL VOL</span></div>
-          <div><span style="color: var(--red);" id="cvd-delta">-38038.81</span><br><span style="font-size:7px; color:var(--text-muted)">BTC DELTA</span></div>
-          <div><span style="color: var(--red);" id="cvd-trend">Bearish ↓</span><br><span style="font-size:7px; color:var(--text-muted)">TREND</span></div>
-        </div>
-        <div class="info-explain" id="cvdExp">
-          CVD = aggressive buys minus aggressive sells, cumulative. Rising CVD = more money entering via market buys.
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ==================== TAB 2: ADVANCED VIEW ==================== -->
-  <main id="tab-advanced" class="col" style="display: none;">
-    <!-- Order Book Depth (Asks & Bids) -->
-    <div class="card">
-      <div class="depth-book-grid">
-        <!-- Asks (Sell Walls) -->
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-left">
+      <div class="site-brand" style="margin-bottom: 8px;">
+        <div class="wz-logo-icon">⚡</div>
         <div>
-          <div class="card-header" style="color: #f87171;">ORDER BOOK — ASKS (SELL WALLS)</div>
-          <table class="depth-table">
-            <thead>
-              <tr><th>PRICE</th><th>SIZE (BTC)</th><th>DEPTH ($)</th></tr>
-            </thead>
-            <tbody id="advanced-asks-body"></tbody>
-          </table>
-        </div>
-
-        <!-- Bids (Buy Walls) -->
-        <div>
-          <div class="card-header" style="color: #38bdf8;">ORDER BOOK — BIDS (BUY WALLS)</div>
-          <table class="depth-table">
-            <thead>
-              <tr><th>PRICE</th><th>SIZE (BTC)</th><th>DEPTH ($)</th></tr>
-            </thead>
-            <tbody id="advanced-bids-body"></tbody>
-          </table>
+          <div class="site-title">Waqar Zaka</div>
+          <div class="site-subtitle">LET'S GET RICH WEB 3.0</div>
         </div>
       </div>
+      <p class="footer-disclaimer-text">DISCLAIMER: We are an educational platform providing real-time data intelligence tools. Trading cryptocurrencies involves significant risk.</p>
     </div>
-
-    <!-- Liquidation Map & Extended CVD -->
-    <div class="grid-2col">
-      <div class="card">
-        <div class="card-header">LIQUIDATION MAP</div>
-        <div class="metric-desc" style="margin-top: 8px;">Estimated levels where leveraged positions get force-closed.</div>
-        <div style="padding: 20px 0; color: var(--text-muted); font-size: 10.5px; text-align: center;">
-          Loading liquidation data...
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">CVD — EXTENDED SESSION VIEW</div>
-        <div style="height: 130px; width: 100%; margin-top: 6px;">
-          <canvas id="cvdExtendedCanvas" width="580" height="130"></canvas>
-        </div>
-      </div>
+    <div class="footer-col">
+      <h4>RESOURCES</h4>
+      <a href="#">About</a>
+      <a href="#">Terms & Conditions</a>
+      <a href="#">Privacy Policy</a>
     </div>
-
-    <!-- Active Walls Table -->
-    <div class="card">
-      <div class="card-header">ACTIVE WALLS — LARGE RESTING ORDERS</div>
-      <div class="metric-desc" style="min-height: unset;">Orders >= 8 BTC within 2% of current price, sorted by size.</div>
-      <table class="active-walls-table">
-        <thead>
-          <tr>
-            <th>PRICE</th>
-            <th>SIDE</th>
-            <th>SIZE (BTC)</th>
-            <th>VALUE ($)</th>
-            <th>DISTANCE</th>
-            <th style="width: 25%;">DEPTH</th>
-          </tr>
-        </thead>
-        <tbody id="active-walls-body"></tbody>
-      </table>
+    <div class="footer-col">
+      <h4>OFFICIAL INFO</h4>
+      <p>Email: <a href="mailto:info@waqarzaka.net">info@waqarzaka.net</a></p>
+      <p>Community: Waqar Zaka Official</p>
     </div>
-  </main>
-
-  <!-- ==================== TAB 3: ORDER EVENTS VIEW ==================== -->
-  <main id="tab-events" class="col" style="display: none;">
-    <div class="order-events-grid">
-      <!-- Left: Large Order Flow Stream -->
-      <div class="card">
-        <div class="card-header">LARGE ORDER FLOW — LIVE LOG</div>
-        <div class="metric-desc" style="min-height: unset; margin-bottom: 10px;">Every order >= 2 BTC that appears, fills, moves, or cancels.</div>
-        <div class="stream-card-list" id="order-events-stream"></div>
-      </div>
-
-      <!-- Right: Active Spoof Watch Monitoring -->
-      <div class="card">
-        <div class="card-header">ACTIVE SPOOF WATCH — MONITORING</div>
-        <div class="metric-desc" style="min-height: unset; margin-bottom: 10px;">Large orders (>= 5 BTC) being watched for suspicious behavior.</div>
-        <div id="spoof-watch-list"></div>
-      </div>
-    </div>
-  </main>
-
-  <!-- ==================== TAB 4: ALERTS VIEW ==================== -->
-  <main id="tab-alerts" class="col" style="display: none;">
-    <div class="card">
-      <div class="card-header">ALERT SETTINGS</div>
-      <div class="alerts-settings-box">
-        <label class="filter-check"><input type="checkbox" id="chk-sweep" checked> Liquidity Sweep (conf >=55)</label>
-        <label class="filter-check"><input type="checkbox" id="chk-spoof" checked> Possible Spoofing (prob >=70)</label>
-        <label class="filter-check"><input type="checkbox" id="chk-target" checked> Liquidity Target (score >=75)</label>
-        <label class="filter-check"><input type="checkbox" id="chk-squeeze" checked> Squeeze Risk (>=75)</label>
-      </div>
-
-      <div class="card-header" style="margin-top: 8px;">ALERT LOG · <span id="alerts-total-count">5 TOTAL</span></div>
-      <div class="stream-card-list" id="alerts-feed-list"></div>
-    </div>
-  </main>
-
-  <footer class="footer-disclaimer">
-    LIQUIDITY RADAR · REAL-TIME CRYPTO ORDERFLOW INTELLIGENCE
   </footer>
 </div>
 
