@@ -158,6 +158,30 @@ function connectRadarWebSocket() {
                 state.scores = Object.assign(state.scores, d.scores);
               }
 
+              // Dynamic real-time calculation of Bull Trap & Bear Trap Risk
+              const cvdDelta = (state.cvd && state.cvd.delta) || 0;
+              const bias = (state.scores && state.scores.biasScore) || 50;
+              const spoof = (state.scores && state.scores.spoofProb) || 50;
+              const oiChg = (state.scores && state.scores.oiChange) || 0;
+
+              if (!state.scores.bullTrapRisk || state.scores.bullTrapRisk === 0) {
+                let baseBull = 24;
+                if (cvdDelta < 0) baseBull += Math.min(38, (Math.abs(cvdDelta) / 1500) * 16);
+                if (bias > 50) baseBull += (bias - 50) * 0.45;
+                if (spoof > 60) baseBull += (spoof - 60) * 0.4;
+                if (oiChg > 0 && cvdDelta < 0) baseBull += 12;
+                state.scores.bullTrapRisk = Math.max(8, Math.min(95, Math.round(baseBull)));
+              }
+
+              if (!state.scores.bearTrapRisk || state.scores.bearTrapRisk === 0) {
+                let baseBear = 20;
+                if (cvdDelta > 0) baseBear += Math.min(38, (cvdDelta / 1500) * 16);
+                if (bias < 50) baseBear += (50 - bias) * 0.45;
+                if (spoof > 60) baseBear += (spoof - 60) * 0.4;
+                if (oiChg > 0 && cvdDelta > 0) baseBear += 12;
+                state.scores.bearTrapRisk = Math.max(8, Math.min(95, Math.round(baseBear)));
+              }
+
               if (d.cvd) {
                 state.cvd.history = d.cvd.slice(-150);
                 if (d.cvd.length > 0) {

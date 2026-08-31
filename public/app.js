@@ -405,12 +405,79 @@ function updateUI() {
     document.getElementById('sweep-price').textContent = '$' + Math.round(localState.scores.sweepPrice).toLocaleString();
     document.getElementById('sweep-conf').textContent = Math.round(localState.scores.sweepConf || 34) + '/100';
   }
+  if (localState.scores.sweepType) {
+    const isBullSweep = localState.scores.sweepType.includes('bull');
+    const pill = document.getElementById('sweep-pill');
+    if (pill) {
+      pill.textContent = (isBullSweep ? '⌃ ' : '⌄ ') + localState.scores.sweepType.toUpperCase().replace('-', ' ') + ' SWEEP';
+      pill.style.color = isBullSweep ? 'var(--green)' : 'var(--red)';
+      pill.style.borderColor = isBullSweep ? 'rgba(0, 230, 118, 0.3)' : 'rgba(255, 51, 102, 0.3)';
+    }
+  }
+  if (localState.scores.sweepAge) {
+    const ageMin = Math.max(1, Math.round((Date.now() - localState.scores.sweepAge) / 60000));
+    const ageEl = document.getElementById('sweep-age');
+    if (ageEl) ageEl.textContent = ageMin + 'm ago';
+  }
 
-  // Trap & Squeeze Risk Bars
-  document.getElementById('risk-short').style.width = (localState.scores.shortSqueezeRisk || 35) + '%';
-  document.getElementById('risk-short-val').textContent = Math.round(localState.scores.shortSqueezeRisk || 35);
-  document.getElementById('risk-long').style.width = (localState.scores.longSqueezeRisk || 55) + '%';
-  document.getElementById('risk-long-val').textContent = Math.round(localState.scores.longSqueezeRisk || 55);
+  // ---------------- TRAP & SQUEEZE RISK BARS ----------------
+  let bullVal = localState.scores.bullTrapRisk;
+  let bearVal = localState.scores.bearTrapRisk;
+  const cvdDelta = (localState.cvd && localState.cvd.delta) || 0;
+  const biasScore = localState.scores.biasScore || 50;
+  const spoofScore = localState.scores.spoofProb || 50;
+  const oiChg = localState.scores.oiChange || 0;
+
+  if (!bullVal || bullVal === 0) {
+    let bRisk = 24;
+    if (cvdDelta < 0) bRisk += Math.min(38, (Math.abs(cvdDelta) / 1500) * 16);
+    if (biasScore > 50) bRisk += (biasScore - 50) * 0.45;
+    if (spoofScore > 60) bRisk += (spoofScore - 60) * 0.4;
+    if (oiChg > 0 && cvdDelta < 0) bRisk += 12;
+    bullVal = Math.max(8, Math.min(95, Math.round(bRisk)));
+  }
+
+  if (!bearVal || bearVal === 0) {
+    let bRisk = 20;
+    if (cvdDelta > 0) bRisk += Math.min(38, (cvdDelta / 1500) * 16);
+    if (biasScore < 50) bRisk += (50 - biasScore) * 0.45;
+    if (spoofScore > 60) bRisk += (spoofScore - 60) * 0.4;
+    if (oiChg > 0 && cvdDelta > 0) bRisk += 12;
+    bearVal = Math.max(8, Math.min(95, Math.round(bRisk)));
+  }
+
+  const shortVal = Math.round(localState.scores.shortSqueezeRisk || 35);
+  const longVal = Math.round(localState.scores.longSqueezeRisk || 55);
+
+  const riskBullEl = document.getElementById('risk-bull');
+  const riskBullVal = document.getElementById('risk-bull-val');
+  if (riskBullEl && riskBullVal) {
+    riskBullEl.style.width = bullVal + '%';
+    riskBullVal.textContent = bullVal;
+    riskBullVal.style.color = bullVal > 50 ? 'var(--red)' : '#f87171';
+  }
+
+  const riskBearEl = document.getElementById('risk-bear');
+  const riskBearVal = document.getElementById('risk-bear-val');
+  if (riskBearEl && riskBearVal) {
+    riskBearEl.style.width = bearVal + '%';
+    riskBearVal.textContent = bearVal;
+    riskBearVal.style.color = bearVal > 50 ? 'var(--amber)' : '#fbbf24';
+  }
+
+  const riskShortEl = document.getElementById('risk-short');
+  const riskShortVal = document.getElementById('risk-short-val');
+  if (riskShortEl && riskShortVal) {
+    riskShortEl.style.width = shortVal + '%';
+    riskShortVal.textContent = shortVal;
+  }
+
+  const riskLongEl = document.getElementById('risk-long');
+  const riskLongVal = document.getElementById('risk-long-val');
+  if (riskLongEl && riskLongVal) {
+    riskLongEl.style.width = longVal + '%';
+    riskLongVal.textContent = longVal;
+  }
 
   // Spoofing
   if (localState.scores.spoofProb !== undefined) {
@@ -518,6 +585,36 @@ function updateUI() {
         </td>
       </tr>
     `).join('');
+  }
+
+  // ---------------- TAB 3: ORDER EVENTS DATA BINDING ----------------
+  const eventsEl = document.getElementById('order-events-stream');
+  if (eventsEl) {
+    const events = (localState.orderEvents && localState.orderEvents.length > 0)
+      ? localState.orderEvents
+      : (localState.book && localState.book.activeWalls ? localState.book.activeWalls.map((w, idx) => ({
+          type: w.side.toUpperCase() === 'BID' ? 'BUY WALL PLACED' : 'SELL WALL PLACED',
+          price: w.price,
+          qty: w.qty || w.size || 0,
+          usd: w.usd || (w.price * (w.qty || 1)),
+          side: w.side.toUpperCase(),
+          time: 'Live'
+        })) : []);
+
+    if (events.length > 0) {
+      eventsEl.innerHTML = events.slice(0, 10).map(e => `
+        <div class="alert-item-card" style="border-left: 3px solid ${e.side === 'BID' || e.side === 'BUY' ? 'var(--green)' : 'var(--red)'};">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div>
+              <span style="font-weight: 800; color: ${e.side === 'BID' || e.side === 'BUY' ? 'var(--green)' : 'var(--red)'};">${e.type || 'ORDER FLOW'}</span>
+              <span style="color: #fff; margin-left: 8px; font-weight: 700;">$${Math.round(e.price).toLocaleString()}</span>
+              <span style="color: var(--text-sub); margin-left: 6px;">(${parseFloat(e.qty).toFixed(2)} BTC)</span>
+            </div>
+            <div style="color: var(--text-muted); font-size: 10px;">${e.time || 'Live'}</div>
+          </div>
+        </div>
+      `).join('');
+    }
   }
 
   // ---------------- TAB 4: ALERTS DATA BINDING ----------------
