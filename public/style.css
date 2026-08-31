@@ -274,6 +274,108 @@ body {
   display: block;
 }
 
+/* ---------------- LIQUIDITY TARGET ZONES (EXACT 1:1 DESIGN) ---------------- */
+.zones-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.zone-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  height: 32px;
+}
+
+.zone-price {
+  width: 88px;
+  flex-shrink: 0;
+  font-weight: 800;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.zone-price.buy {
+  color: #38bdf8;
+}
+
+.zone-price.sell {
+  color: #fbbf24;
+}
+
+.zone-bar-box {
+  position: relative;
+  flex: 1;
+  height: 26px;
+  background: rgba(11, 16, 28, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  margin: 0 10px;
+}
+
+.zone-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  z-index: 0;
+}
+
+.zone-bar-fill.buy {
+  background: rgba(56, 189, 248, 0.18);
+  border-right: 2px solid rgba(56, 189, 248, 0.4);
+}
+
+.zone-bar-fill.sell {
+  background: rgba(245, 158, 11, 0.18);
+  border-right: 2px solid rgba(245, 158, 11, 0.4);
+}
+
+.zone-bar-label {
+  position: relative;
+  z-index: 1;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.zone-bar-label.buy {
+  color: #38bdf8;
+}
+
+.zone-bar-label.sell {
+  color: #fbbf24;
+}
+
+.zone-score {
+  width: 55px;
+  text-align: right;
+  flex-shrink: 0;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.zone-score.buy {
+  color: #38bdf8;
+}
+
+.zone-score.sell {
+  color: #fbbf24;
+}
+
 /* ---------------- HERO PRICE CARD ---------------- */
 .hero-wrapper {
   display: grid;

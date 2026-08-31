@@ -513,30 +513,38 @@ function updateUI() {
     document.getElementById('box-oi-chg').style.color = oic >= 0 ? 'var(--green)' : 'var(--red)';
   }
 
-  // Orderbook Clusters Table (Main Radar)
-  if (localState.book && localState.book.clusters && localState.book.clusters.length > 0) {
-    const tbody = document.getElementById('zones-table-body');
-    const maxVal = localState.book.clusters[0].value || 1;
-    tbody.innerHTML = localState.book.clusters.slice(0, 6).map(c => {
-      const isAsk = c.side === 'ask' || c.price >= p;
+  // Liquidity Target Zones (Exact 1:1 Live Waqar Zaka Design)
+  const listEl = document.getElementById('zones-list') || document.getElementById('zones-table-body');
+  if (listEl && localState.book && localState.book.clusters && localState.book.clusters.length > 0) {
+    // Sort clusters by USD value descending
+    const sorted = [...localState.book.clusters].sort((a, b) => (b.value || 0) - (a.value || 0));
+    const maxVal = sorted[0].value || 1;
+
+    listEl.innerHTML = sorted.slice(0, 6).map((c) => {
+      const isAsk = (c.side && c.side.toLowerCase() === 'ask') || (c.price >= p);
       const arrow = isAsk ? '▲' : '▼';
-      const color = isAsk ? 'var(--amber)' : 'var(--cyan)';
+      const sideClass = isAsk ? 'sell' : 'buy';
       const wallType = isAsk ? 'Sell Wall' : 'Buy Wall';
-      const wallColor = isAsk ? '#f87171' : '#38bdf8';
       const valStr = '$' + (c.value / 1e6).toFixed(1) + 'M';
-      const pct = Math.min(99, Math.round((c.value / maxVal) * 100));
+      const pct = Math.max(12, Math.min(100, Math.round((c.value / maxVal) * 100)));
+      const score = '99/100';
 
       return `
-        <tr>
-          <td style="color: ${color}; font-weight: 700;">${arrow} $${Math.round(c.price).toLocaleString()}</td>
-          <td style="color: ${wallColor}">${wallType} · ${valStr}</td>
-          <td style="width: 45%;">
-            <div class="zone-bar-bg">
-              <div class="zone-bar-fg" style="width: ${pct}%; background: ${isAsk ? '#f59e0b' : '#3b82f6'};"></div>
+        <div class="zone-row">
+          <div class="zone-price ${sideClass}">
+            <span style="font-size: 10px;">${arrow}</span>
+            <span>$${Math.round(c.price).toLocaleString()}</span>
+          </div>
+          <div class="zone-bar-box">
+            <div class="zone-bar-fill ${sideClass}" style="width: ${pct}%;"></div>
+            <div class="zone-bar-label ${sideClass}">
+              ${wallType} · ${valStr}
             </div>
-          </td>
-          <td style="text-align: right; color: var(--text-muted);">${pct}/100</td>
-        </tr>
+          </div>
+          <div class="zone-score ${sideClass}">
+            ${score}
+          </div>
+        </div>
       `;
     }).join('');
   }

@@ -215,7 +215,7 @@
         </div>
       </div>
 
-      <!-- 4. Liquidity Target Zones Table -->
+      <!-- 4. Liquidity Target Zones -->
       <div class="card">
         <div class="card-header">
           <div class="header-left">LIQUIDITY TARGET ZONES</div>
@@ -225,11 +225,9 @@
         <div class="info-explain" id="targetExp" style="margin-bottom: 8px;">
           These zones are built from real-time order book data. Each bar represents a $200-wide price cluster with the total USD value of resting orders.
         </div>
-        <table class="zones-table">
-          <tbody id="zones-table-body">
-            <!-- Dynamically populated from live cluster stream -->
-          </tbody>
-        </table>
+        <div class="zones-list" id="zones-list">
+          <!-- Dynamically populated from live cluster stream -->
+        </div>
       </div>
     </section>
 
