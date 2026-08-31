@@ -278,8 +278,9 @@ body {
 .zones-list {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  margin-top: 8px;
+  gap: 8px;
+  margin-top: 10px;
+  width: 100%;
 }
 
 .zone-row {
@@ -293,13 +294,13 @@ body {
 }
 
 .zone-price {
-  width: 88px;
+  width: 90px;
   flex-shrink: 0;
   font-weight: 800;
   font-size: 12px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .zone-price.buy {
@@ -313,15 +314,15 @@ body {
 .zone-bar-box {
   position: relative;
   flex: 1;
-  height: 26px;
-  background: rgba(11, 16, 28, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  height: 28px;
+  background: #080d19;
+  border: 1px solid #141f35;
   border-radius: 5px;
   overflow: hidden;
   display: flex;
   align-items: center;
   padding: 0 12px;
-  margin: 0 10px;
+  margin: 0 12px;
 }
 
 .zone-bar-fill {
@@ -330,18 +331,16 @@ body {
   bottom: 0;
   left: 0;
   border-radius: 4px;
-  transition: width 0.3s ease;
+  transition: width 0.35s ease;
   z-index: 0;
 }
 
 .zone-bar-fill.buy {
-  background: rgba(56, 189, 248, 0.18);
-  border-right: 2px solid rgba(56, 189, 248, 0.4);
+  background: rgba(30, 64, 175, 0.45);
 }
 
 .zone-bar-fill.sell {
-  background: rgba(245, 158, 11, 0.18);
-  border-right: 2px solid rgba(245, 158, 11, 0.4);
+  background: rgba(146, 64, 14, 0.45);
 }
 
 .zone-bar-label {

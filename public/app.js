@@ -680,32 +680,82 @@ function updateUI() {
 updateUI();
 
 // -------------------------------------------------------------
-// 6. CONNECT SSE LIVE STREAM
+// 6. CONNECT SSE LIVE STREAM & REAL-TIME ENGINE
 // -------------------------------------------------------------
 function connectLiveStream() {
-  try {
-    const evtSource = new EventSource('/api/stream');
-    evtSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        localState = Object.assign(localState, data);
-        document.getElementById('conn-status').textContent = 'LIVE';
-        document.getElementById('conn-status').style.color = 'var(--green)';
-        updateUI();
-      } catch (e) {}
-    };
+  let evtSource = null;
+  let pollInterval = null;
 
-    evtSource.onerror = () => {
-      setInterval(async () => {
+  function startSSE() {
+    try {
+      if (evtSource) {
+        evtSource.close();
+      }
+      evtSource = new EventSource('/api/stream');
+      
+      evtSource.onopen = () => {
+        const conn = document.getElementById('conn-status');
+        if (conn) {
+          conn.textContent = 'LIVE';
+          conn.style.color = 'var(--green)';
+        }
+        if (pollInterval) {
+          clearInterval(pollInterval);
+          pollInterval = null;
+        }
+      };
+
+      evtSource.onmessage = (event) => {
         try {
-          const res = await fetch('/api/snapshot');
-          const data = await res.json();
-          localState = Object.assign(localState, data);
-          updateUI();
-        } catch(e) {}
-      }, 300);
-    };
-  } catch (e) {}
+          const data = JSON.parse(event.data);
+          if (data) {
+            localState = Object.assign({}, localState, data);
+            if (data.book && data.book.clusters) {
+              localState.book.clusters = data.book.clusters;
+            }
+            if (data.scores) {
+              localState.scores = Object.assign({}, localState.scores, data.scores);
+            }
+            updateUI();
+          }
+        } catch (e) {}
+      };
+
+      evtSource.onerror = () => {
+        const conn = document.getElementById('conn-status');
+        if (conn) {
+          conn.textContent = 'POLLING';
+          conn.style.color = 'var(--amber)';
+        }
+        
+        if (!pollInterval) {
+          pollInterval = setInterval(async () => {
+            try {
+              const res = await fetch('/api/snapshot');
+              const data = await res.json();
+              if (data) {
+                localState = Object.assign({}, localState, data);
+                if (data.book && data.book.clusters) {
+                  localState.book.clusters = data.book.clusters;
+                }
+                if (data.scores) {
+                  localState.scores = Object.assign({}, localState.scores, data.scores);
+                }
+                const cEl = document.getElementById('conn-status');
+                if (cEl) {
+                  cEl.textContent = 'LIVE';
+                  cEl.style.color = 'var(--green)';
+                }
+                updateUI();
+              }
+            } catch(e) {}
+          }, 600);
+        }
+      };
+    } catch (e) {}
+  }
+
+  startSSE();
 }
 
 connectLiveStream();
