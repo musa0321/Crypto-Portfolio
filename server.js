@@ -259,6 +259,12 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (req.url === '/health' || req.url === '/api/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() }));
+    return;
+  }
+
   // Static files
   let reqPath = req.url.split('?')[0];
   if (reqPath === '/' || reqPath === '/liquidity-radar') reqPath = '/index.html';
@@ -290,7 +296,15 @@ setInterval(() => {
   if (sseClients.size > 0) {
     const payload = `data: ${JSON.stringify(state)}\n\n`;
     for (const client of sseClients) {
-      client.write(payload);
+      try {
+        if (!client.writableEnded && !client.destroyed) {
+          client.write(payload);
+        } else {
+          sseClients.delete(client);
+        }
+      } catch (e) {
+        sseClients.delete(client);
+      }
     }
   }
 }, 150);

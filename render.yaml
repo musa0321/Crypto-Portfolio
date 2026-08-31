@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: crypto-liquidity-radar
+    runtime: node
+    plan: free
+    buildCommand: ""
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 20.0.0

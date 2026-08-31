@@ -1,0 +1,22 @@
+{
+  "name": "crypto-liquidity-radar",
+  "version": "1.0.0",
+  "description": "Real-time Crypto Liquidity Radar and Order Book Intelligence",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "crypto",
+    "radar",
+    "liquidity",
+    "orderbook",
+    "binance"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
